@@ -1,0 +1,34 @@
+module: Foundation
+name: URLSessionDownloadDelegate
+available:
+  macOS: '10.9'
+  iOS: '7.0'
+  tvOS: '9.0'
+  watchOS: '2.0'
+arguments:
+- name: session
+  type: URLSession
+- name: task
+  type: URLSessionDownloadTask
+methods:
+- name: DidFinishDownloading
+  selector: 'URLSession:downloadTask:didFinishDownloadingToURL:'
+  arguments:
+  - name: location
+    type: URL
+- name: DidWriteData
+  selector: 'URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:'
+  arguments:
+  - name: written
+    type: Int64
+  - name: total
+    type: Int64
+  - name: expected
+    type: Int64
+- name: DidResume
+  selector: 'URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:'
+  arguments:
+  - name: offset
+    type: Int64
+  - name: expected
+    type: Int64

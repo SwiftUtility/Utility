@@ -1,0 +1,34 @@
+module: Foundation
+name: URLSessionDelegate
+available:
+  macOS: '10.9'
+  iOS: '7.0'
+  tvOS: '9.0'
+  watchOS: '2.0'
+arguments:
+- name: session
+  type: URLSession
+methods:
+- name: DidBecomeInvalid
+  selector: 'URLSession:didBecomeInvalidWithError:'
+  arguments:
+  - name: error
+    type: Error?
+- name: DidReceiveChallenge
+  selector: 'URLSession:didReceiveChallenge:completionHandler:'
+  arguments:
+  - name: challenge
+    type: URLAuthenticationChallenge
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: disposition
+      type: URLSession.AuthChallengeDisposition
+    - name: credential
+      type: URLCredential?
+- name: DidFinishEventsForBackgroundURLSession
+  selector: 'URLSessionDidFinishEventsForBackgroundURLSession:'
+  available:
+    macOS: '11.0'
