@@ -1,0 +1,55 @@
+module: Foundation
+name: URLSessionDataDelegate
+available:
+  macOS: '10.9'
+  iOS: '7.0'
+  tvOS: '9.0'
+  watchOS: '2.0'
+arguments:
+- name: session
+  type: URLSession
+- name: task
+  type: URLSessionDataTask
+methods:
+- name: DidReceiveResponse
+  selector: 'URLSession:dataTask:didReceiveResponse:completionHandler:'
+  arguments:
+  - name: response
+    type: URLResponse
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: disposition
+      type: URLSession.ResponseDisposition
+- name: DidBecomeDownloadTask
+  selector: 'URLSession:dataTask:didBecomeDownloadTask:'
+  arguments:
+  - name: downloadTask
+    type: URLSessionDownloadTask
+- name: DidBecomeStreamTask
+  selector: 'URLSession:dataTask:didBecomeStreamTask:'
+  available:
+    macOS: '10.11'
+    iOS: '9.0'
+  arguments:
+  - name: streamTask
+    type: URLSessionStreamTask
+- name: DidReceiveData
+  selector: 'URLSession:dataTask:didReceiveData:'
+  arguments:
+  - name: data
+    type: Data
+- name: WillCacheResponse
+  selector: 'URLSession:dataTask:willCacheResponse:completionHandler:'
+  arguments:
+  - name: response
+    type: CachedURLResponse
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: response
+      type: CachedURLResponse?

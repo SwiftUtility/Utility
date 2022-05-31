@@ -1,0 +1,25 @@
+module: Foundation
+name: URLSessionWebSocketDelegate
+available:
+  macOS: '10.15'
+  iOS: '13.0'
+  tvOS: '13.0'
+  watchOS: '6.0'
+arguments:
+- name: session
+  type: URLSession
+- name: task
+  type: URLSessionWebSocketTask
+methods:
+- name: DidOpen
+  selector: 'URLSession:webSocketTask:didOpenWithProtocol:'
+  arguments:
+  - name: aProtocol
+    type: String?
+- name: DidClose
+  selector: 'URLSession:webSocketTask:didCloseWithCode:reason:'
+  arguments:
+  - name: code
+    type: URLSessionWebSocketTask.CloseCode
+  - name: reason
+    type: Data?

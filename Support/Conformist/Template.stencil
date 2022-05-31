@@ -1,0 +1,112 @@
+{% if module %}
+#if canImport({{module}})
+import {{module}}
+{% endif %}
+import Facility
+extension Conformist {
+  @available(macOS {{available.macOS}}, *)
+  @available(iOS {{available.iOS}}, *)
+  @available(tvOS {{available.tvOS}}, *)
+  @available(watchOS {{available.watchOS}}, *)
+  public enum {{name}} {
+{% for method in methods %}
+    @available(macOS {{method.available.macOS}}, *)
+    @available(iOS {{method.available.iOS}}, *)
+    @available(tvOS {{method.available.tvOS}}, *)
+    @available(watchOS {{method.available.watchOS}}, *)
+    public struct {{method.name}}: ConformistRequest {
+      public typealias Response = {{method.result}}
+{% for argument in method.arguments %}
+{% if argument.type %}
+      public var {{argument.name}}: {{argument.type}}
+{% endif %}
+{% if argument.async %}
+      public var {{argument.name}}: Act.Of<{{argument.async}}>.Go
+{% endif %}
+{% endfor %}
+      public init(
+{% for argument in method.arguments %}
+{% if argument.type %}
+        {{argument.name}}: {{argument.type}}{% if not forloop.last %},{% endif %}
+{% endif %}
+{% if argument.async %}
+        {{argument.name}}: @escaping Act.Of<{{argument.async}}>.Go{% if not forloop.last %},{% endif %}
+{% endif %}
+{% endfor %}
+      ) {
+{% for argument in method.arguments %}
+        self.{{argument.name}} = {{argument.name}}
+{% endfor %}
+      }
+      public static func makeResopnder(
+        handle: @escaping Act.Of<Self>.Do<Self.Response>
+      ) -> Conformist.Responder<Self> {
+        Responder(handle: handle)
+      }
+      public static var conform: Protocol {
+        {{module}}.{{name}}.self
+      }
+      public static var responds: Selector {
+        #selector(Responder.respond({% for argument in method.arguments %}{{argument.name}}:{% endfor %}))
+      }
+{% for definition in method.definitions %}
+      public struct {{definition.name}} {
+{% for argument in definition.arguments %}
+        public var {{argument.name}}: {{argument.type}}
+{% endfor %}
+        public init(
+{% for argument in definition.arguments %}
+          {{argument.name}}: {{argument.type}}{% if not forloop.last %},{% endif %}
+{% endfor %}
+        ) {
+{% for argument in definition.arguments %}
+          self.{{argument.name}} = {{argument.name}}
+{% endfor %}
+        }
+        public static func curry(callback: @escaping CallBack) -> Act.Of<Self>.Go {
+          return { this in
+            callback(
+{% for argument in definition.arguments %}
+              this.{{argument.name}}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+            )
+          }
+        }
+        public typealias CallBack = (
+{% for argument in definition.arguments %}
+          {{argument.type}}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+        ) -> Void
+      }
+{% endfor %}
+      public final class Responder: Conformist.Responder<{{method.name}}> {
+        @objc({{method.selector}})
+        func respond(
+{% for argument in method.arguments %}
+{% if argument.type %}
+          {{argument.name}}: {{argument.type}}{% if not forloop.last %},{% endif %}
+{% endif %}
+{% if argument.async %}
+          {{argument.name}}: @escaping {{argument.async}}.CallBack{% if not forloop.last %},{% endif %}
+{% endif %}
+{% endfor %}
+        ) -> Response {
+          handle(.init(
+{% for argument in method.arguments %}
+{% if argument.type %}
+            {{argument.name}}: {{argument.name}}{% if not forloop.last %},{% endif %}
+{% endif %}
+{% if argument.async %}
+            {{argument.name}}: {{argument.async}}.curry(callback: {{argument.name}}){% if not forloop.last %},{% endif %}
+{% endif %}
+{% endfor %}
+          ))
+        }
+      }
+    }
+{% endfor %}
+  }
+}
+{% if module %}
+#endif
+{% endif %}

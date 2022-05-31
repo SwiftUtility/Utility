@@ -1,0 +1,26 @@
+module: Foundation
+name: URLSessionStreamDelegate
+available:
+  macOS: '10.11'
+  iOS: '7.0'
+  tvOS: '9.0'
+  watchOS: '2.0'
+arguments:
+- name: session
+  type: URLSession
+- name: task
+  type: URLSessionStreamTask
+methods:
+- name: ReadClosed
+  selector: 'URLSession:readClosedForStreamTask:'
+- name: WriteClosed
+  selector: 'URLSession:writeClosedForStreamTask:'
+- name: BetterRouteDiscovered
+  selector: 'URLSession:betterRouteDiscoveredForStreamTask:'
+- name: DidBecomeStream
+  selector: 'URLSession:streamTask:didBecomeInputStream:outputStream:'
+  arguments:
+  - name: input
+    type: InputStream
+  - name: output
+    type: OutputStream

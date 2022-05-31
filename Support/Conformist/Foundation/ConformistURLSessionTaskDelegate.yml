@@ -1,0 +1,101 @@
+module: Foundation
+name: URLSessionTaskDelegate
+available:
+  macOS: '10.9'
+  iOS: '7.0'
+  tvOS: '9.0'
+  watchOS: '2.0'
+arguments:
+- name: session
+  type: URLSession
+- name: task
+  type: URLSessionTask
+methods:
+- name: WillBeginDelayedRequest
+  selector: 'URLSession:task:willBeginDelayedRequest:completionHandler:'
+  available:
+    macOS: '10.13'
+    iOS: '11.0'
+    tvOS: '11.0'
+    watchOS: '4.0'
+  arguments:
+  - name: request
+    type: URLRequest
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: disposition
+      type: URLSession.DelayedRequestDisposition
+    - name: request
+      type: URLRequest?
+- name: IsWaitingForConnectivity
+  selector: 'URLSession:taskIsWaitingForConnectivity:'
+  available:
+    macOS: '10.13'
+    iOS: '11.0'
+    tvOS: '11.0'
+    watchOS: '4.0'
+- name: WillPerformHTTPRedirection
+  selector: 'URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:'
+  arguments:
+  - name: response
+    type: HTTPURLResponse
+  - name: request
+    type: URLRequest
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: request
+      type: URLRequest?
+- name: DidReceiveChallenge
+  selector: 'URLSession:task:didReceiveChallenge:completionHandler:'
+  arguments:
+  - name: challenge
+    type: URLAuthenticationChallenge
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: disposition
+      type: URLSession.AuthChallengeDisposition
+    - name: credential
+      type: URLCredential?
+- name: NeedNewBodyStream
+  selector: 'URLSession:task:needNewBodyStream:'
+  arguments:
+  - name: complete
+    async: Completion
+  definitions:
+  - name: Completion
+    arguments:
+    - name: stream
+      type: InputStream?
+- name: DidSendBodyData
+  selector: 'URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:'
+  arguments:
+  - name: sent
+    type: Int64
+  - name: total
+    type: Int64
+  - name: expected
+    type: Int64
+- name: DidFinishCollectingMetrics
+  selector: 'URLSession:task:didFinishCollectingMetrics:'
+  available:
+    macOS: '10.12'
+    iOS: '10.0'
+    tvOS: '10.0'
+    watchOS: '3.0'
+  arguments:
+  - name: metrics
+    type: URLSessionTaskMetrics
+- name: DidComplete
+  selector: 'URLSession:task:didCompleteWithError:'
+  arguments:
+  - name: error
+    type: Error?
