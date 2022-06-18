@@ -6,7 +6,7 @@ public extension String {
   func dropPrefix<T: StringProtocol>(_ prefix: T) throws -> Self { try self
     .hasPrefix(prefix)
     .then(prefix.count)
-    .map(dropLast(_:))
+    .map(dropFirst(_:))
     .map(Self.init(_:))
     .or { throw Thrown("no prefix \(prefix) in \(self)") }
   }
