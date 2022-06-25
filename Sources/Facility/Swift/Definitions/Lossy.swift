@@ -24,9 +24,6 @@ public enum Lossy<Value> {
     case .error(let error): return .error(error)
     }
   }
-  public func rethrow(_ error: @autoclosure Act.Do<Error>) -> Self {
-    if case .error = self { return .error(error()) } else { return self }
-  }
   public func mapError(_ transform: Try.Of<Error>.Do<Value>) -> Self {
     guard case .error(let error) = self else { return self }
     do { return try .value(transform(error)) } catch { return .error(error) }
@@ -69,16 +66,6 @@ public enum Lossy<Value> {
     case .error(let error): return .error(error)
     }
   }
-  public func flatReduce<T, U>(
-    into seed: inout T,
-    _ transform: Try.In<T>.Of<Value>.Do<Lossy<U>>
-  ) -> Lossy<U> {
-    switch self {
-    case .value(let value):
-      do { return try .value(transform(&seed, value).get()) } catch { return .error(error) }
-    case .error(let error): return .error(error)
-    }
-  }
   public func reduce<T, U>(
     invert seed: @autoclosure Try.Do<T>,
     _ transform: Try.Of<Value>.Of<T>.Do<U>
@@ -116,26 +103,6 @@ public enum Lossy<Value> {
     switch self {
     case .value(let value):
       do { return try .value(transform(value)(seed()).get()) } catch { return .error(error) }
-    case .error(let error): return .error(error)
-    }
-  }
-  public func reduce<T, U>(
-    call seed: @autoclosure Try.Do<T>,
-    _ transform: Try.By<T>.Of<Value>.Do<U>
-  ) -> Lossy<U> {
-    switch self {
-    case .value(let value):
-      do { return try .value(transform(seed())(value)) } catch { return .error(error) }
-    case .error(let error): return .error(error)
-    }
-  }
-  public func flatReduce<T, U>(
-    call seed: @autoclosure Try.Do<T>,
-    _ transform: Try.By<T>.Of<Value>.Do<Lossy<U>>
-  ) -> Lossy<U> {
-    switch self {
-    case .value(let value):
-      do { return try .value(transform(seed())(value).get()) } catch { return .error(error) }
     case .error(let error): return .error(error)
     }
   }

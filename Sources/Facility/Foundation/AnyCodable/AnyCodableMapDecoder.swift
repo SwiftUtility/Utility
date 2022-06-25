@@ -9,10 +9,10 @@ extension AnyCodable {
       reader.codingPath
     }
     public var allKeys: [Key] {
-      reader.anyCodable.map.or([:]).keys.compactMap(Key.init(stringValue:))
+      reader.anyCodable.map.get([:]).keys.compactMap(Key.init(stringValue:))
     }
     public func contains(_ key: Key) -> Bool {
-      reader.anyCodable.map.or([:])[key.stringValue] != nil
+      reader.anyCodable.map.get([:])[key.stringValue] != nil
     }
     public func decodeNil(forKey key: Key) throws -> Bool {
       try reader.rethrow(what: "not a map", chip: .hash(key.stringValue)) {

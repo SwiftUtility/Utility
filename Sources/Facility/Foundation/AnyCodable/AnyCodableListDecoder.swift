@@ -7,7 +7,7 @@ extension AnyCodable {
       self.reader = reader
     }
     public var count: Int? { reader.anyCodable.list?.count }
-    public var isAtEnd: Bool { currentIndex >= count.or(0) }
+    public var isAtEnd: Bool { currentIndex >= count.get(0) }
     public var codingPath: [CodingKey] { reader.codingPath + [Chip.index(currentIndex)] }
     public mutating func decodeNil() throws -> Bool {
       try reader.rethrow(what: "not a list", chip: .index(currentIndex)) {

@@ -4,7 +4,7 @@ extension AnyCodable {
     let writer: Writer
     let depth: Int
     var codingPath: [CodingKey] { writer.codingPath }
-    var count: Int { writer.codingPath[depth-1].intValue.or(0) }
+    var count: Int { writer.codingPath[depth-1].intValue.get(0) }
     mutating func encodeNil() throws {
       writer.push(to: depth, value: .null)
     }
