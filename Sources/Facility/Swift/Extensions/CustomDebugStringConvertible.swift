@@ -2,7 +2,7 @@ import Foundation
 extension CustomDebugStringConvertible {
   @discardableResult
   public func debug(
-    chips: String? = nil,
+    _ chips: String? = nil,
     file: StaticString = #fileID,
     line: UInt = #line
   ) -> Self {

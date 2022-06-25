@@ -11,12 +11,12 @@ extension AnyCodable {
     var userInfo: [CodingUserInfoKey : Any] { [:] }
     static func write(_ value: Encodable, notation: Notation) throws -> AnyCodable {
       let writer = Writer(notation: notation)
-      try value.encode(to: writer)
+      try writer.write(value)
       writer.flush(to: 1)
       return try writer.items.first.get { throw MayDay("Encoder precondition broken") }
     }
-    func write<T: Encodable>(_ value: T) throws {
-      try notation[T.self].get(T.encode(to:))(value)(self)
+    func write(_ value: Encodable) throws {
+      try notation.encode(value, by: self).get { try value.encode(to: self) }
     }
     func container<Key>(
       keyedBy type: Key.Type
