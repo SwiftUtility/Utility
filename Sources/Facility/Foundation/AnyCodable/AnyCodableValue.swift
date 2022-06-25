@@ -81,7 +81,12 @@ extension AnyCodable {
         self = .float(value)
       } else if let value = try? container.decode(String.self) {
         self = .string(value)
-      } else { throw Thrown("Value can not be decoded") }
+      } else {
+        let path = container.codingPath
+          .map { $0.intValue.map(\.description).get($0.stringValue) }
+          .joined(separator: ".")
+        throw Thrown("\(path) not a value")
+      }
     }
     public func encode(to encoder: Encoder) throws {
       var container = encoder.singleValueContainer()
