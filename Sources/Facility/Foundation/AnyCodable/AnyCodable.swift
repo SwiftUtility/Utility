@@ -4,7 +4,7 @@ public enum AnyCodable: Codable, Equatable, CustomDebugStringConvertible {
   case list([AnyCodable])
   case map([String: AnyCodable])
   public init(from decoder: Decoder) throws {
-    if let value = try? Value(from: decoder) {
+    if let value = try? Value(decoder: decoder) {
       self = .value(value)
     } else if let value = try? [Self](from: decoder) {
         self = .list(value)
