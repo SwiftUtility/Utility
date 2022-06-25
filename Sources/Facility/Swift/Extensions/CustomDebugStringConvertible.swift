@@ -1,7 +1,12 @@
 import Foundation
 extension CustomDebugStringConvertible {
-  public func debug(file: StaticString = #fileID, line: UInt = #line) -> Self {
-    print("debug \(file):\(line) \(String(reflecting: self))")
+  @discardableResult
+  public func debug(
+    chips: String? = nil,
+    file: StaticString = #fileID,
+    line: UInt = #line
+  ) -> Self {
+    SideEffects.shared.printDebug("\(chips.get("\(file)@\(line)")): \(String(reflecting: self))")
     return self
   }
 }

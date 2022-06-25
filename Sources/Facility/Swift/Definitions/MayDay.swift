@@ -7,7 +7,7 @@ public final class MayDay: Error, CustomStringConvertible, CustomDebugStringConv
     self.what = what
     self.file = file
     self.line = line
-    Self.sideEffect(self)
+    SideEffects.shared.reportMayDay(self)
   }
   public var description: String { what }
   public var debugDescription: String { "MayDay@\(file)@\(line): \(what)" }
@@ -18,27 +18,11 @@ public final class MayDay: Error, CustomStringConvertible, CustomDebugStringConv
     line: UInt = #line
   ) {
     guard !condition() else { return }
-    sideEffect(.init(what(), file: file, line: line))
+    SideEffects.shared.reportMayDay(.init(what(), file: file, line: line))
   }
   public static func report(
     _ what: @autoclosure Act.Do<String> = "",
     file: StaticString = #fileID,
     line: UInt = #line
-  ) {
-    sideEffect(.init(what(), file: file, line: line))
-  }
-  /// Action to perform when MayDay is instantiated
-  /// ```
-  /// MayDay.sideEffect = { mayDay in
-  ///   #if DEBUG
-  ///   assertionFailure(mayDay.what, file: mayDay.file, line: mayDay.line)
-  ///   #else
-  ///   Crashlytics.crashlytics().record(error: "\(mayDay.file):\(mayDay.line) \(mayDay.what)")
-  ///   #endif
-  /// }
-  /// ```
-  /// - Warning: Race condition candidate. Change it once when application starts.
-  public static var sideEffect: Act.Of<MayDay>.Go = { mayDay in
-    assertionFailure(mayDay.what, file: mayDay.file, line: mayDay.line)
-  }
+  ) { SideEffects.shared.reportMayDay(.init(what(), file: file, line: line)) }
 }
