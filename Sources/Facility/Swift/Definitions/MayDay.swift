@@ -1,5 +1,5 @@
 /// An error to be handled via sideEffect
-public final class MayDay: Error, CustomStringConvertible {
+public final class MayDay: Error, CustomStringConvertible, CustomDebugStringConvertible {
   public let what: String
   public let file: StaticString
   public let line: UInt
@@ -9,9 +9,8 @@ public final class MayDay: Error, CustomStringConvertible {
     self.line = line
     Self.sideEffect(self)
   }
-  public var description: String {
-    what
-  }
+  public var description: String { what }
+  public var debugDescription: String { "MayDay@\(file)@\(line): \(what)" }
   public static func assert(
     _ condition: @autoclosure Act.Do<Bool>,
     _ what: @autoclosure Act.Do<String> = "",
