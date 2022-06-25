@@ -13,10 +13,10 @@ extension AnyCodable {
       let writer = Writer(notation: notation)
       try value.encode(to: writer)
       writer.flush(to: 1)
-      return try writer.items.first.or { throw MayDay("Encoder precondition broken") }
+      return try writer.items.first.get { throw MayDay("Encoder precondition broken") }
     }
     func write<T: Encodable>(_ value: T) throws {
-      try notation[T.self].or(T.encode(to:))(value)(self)
+      try notation[T.self].get(T.encode(to:))(value)(self)
     }
     func container<Key>(
       keyedBy type: Key.Type

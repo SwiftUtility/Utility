@@ -17,14 +17,14 @@ extension AnyCodable {
       .init(MapDecoder(reader: self))
     }
     public func read<T>(_ type: T.Type) throws -> T where T : Decodable {
-      try dialect[type].or(type.init(from:))(self)
+      try dialect[type].get(type.init(from:))(self)
     }
     static func make(dialect: Dialect, anyCodable: AnyCodable) -> Self {
       .init(anyCodable: anyCodable, codingPath: [], dialect: dialect)
     }
     func make(anyCodable: AnyCodable, chip: Chip? = nil) -> Reader { .init(
       anyCodable: anyCodable,
-      codingPath: codingPath + chip.makeArray(),
+      codingPath: codingPath + chip.array,
       dialect: dialect
     )}
     func rethrow<T>(
@@ -32,10 +32,10 @@ extension AnyCodable {
       chip: Chip = .hash(""),
       make: Try.Do<T>
     ) throws -> T {
-      let path = (codingPath + chip.stringValue.isEmpty.else([chip]).or([]))
-        .map { $0.intValue.map(\.description).or($0.stringValue) }
+      let path = (codingPath + chip.stringValue.isEmpty.else([chip]).get([]))
+        .map { $0.intValue.map(\.description).get($0.stringValue) }
         .joined(separator: ".")
-      return try Thrown.rethrow("\(path): \(what)", make: make)
+      do { return try make() } catch { throw Thrown("\(path): \(what)") }
     }
   }
 }

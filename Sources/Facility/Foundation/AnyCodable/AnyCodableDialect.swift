@@ -9,20 +9,23 @@ extension AnyCodable {
     public static var empty: Self { return .init() }
     public static var json: Self {
       var this = Self()
-      this[URL.self] = { decoder in
-        try Thrown.rethrow("not URL") {
-          try ?!URL(string: decoder.singleValueContainer().decode(String.self))
-        }
+      this[URL.self] = { decoder in try Lossy
+        .init(try decoder.singleValueContainer())
+        .reduce(curry: String.self, SingleValueDecodingContainer.decode(_:))
+        .map { url in try URL(string: url).get { throw Thrown("bad url: \(url)") }}
+        .get()
       }
-      this[Data.self] = { decoder in
-        try Thrown.rethrow("not Data") {
-          try ?!Data(base64Encoded: decoder.singleValueContainer().decode(String.self))
-        }
+      this[Data.self] = { decoder in try Lossy
+        .init(try decoder.singleValueContainer())
+        .reduce(curry: String.self, SingleValueDecodingContainer.decode(_:))
+        .map { data in try Data(base64Encoded: data).get { throw Thrown("bad url: \(data)") }}
+        .get()
       }
-      this[Date.self] = { decoder in
-        try Thrown.rethrow("not Date") {
-          try Date(timeIntervalSince1970: decoder.singleValueContainer().decode(Double.self))
-        }
+      this[Date.self] = { decoder in try Lossy
+        .init(try decoder.singleValueContainer())
+        .reduce(curry: Double.self, SingleValueDecodingContainer.decode(_:))
+        .map(Date.init(timeIntervalSince1970:))
+        .get()
       }
       return this
     }

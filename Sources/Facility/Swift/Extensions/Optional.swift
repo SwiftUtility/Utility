@@ -1,13 +1,10 @@
 import Foundation
 extension Optional {
-  public func or(_ make: @autoclosure Try.Do<Wrapped>) rethrows -> Wrapped {
+  public func get(_ make: @autoclosure Try.Do<Wrapped>) rethrows -> Wrapped {
     try self ?? make()
   }
-  public func or(make: Try.Do<Wrapped>) rethrows -> Wrapped {
+  public func get(make: Try.Do<Wrapped>) rethrows -> Wrapped {
     try self ?? make()
-  }
-  public func or(error: Error) throws -> Wrapped {
-    if let value = self { return value } else { throw error }
   }
   public func mapNil(_ make: @autoclosure Try.Do<Wrapped>) rethrows -> Optional {
     try self ?? make()
@@ -36,11 +33,23 @@ extension Optional {
   ) rethrows -> U? {
     if let value = self { return try transform(value, seed()) } else { return nil }
   }
-  public func makeArray() -> [Wrapped] {
+  public func reduce<T, U>(
+    curry seed: @autoclosure Try.Do<T>,
+    _ transform: Act.By<Wrapped>.Of<T>.Do<U>
+  ) rethrows -> U? {
+    if let value = self { return try transform(value)(seed()) } else { return nil }
+  }
+  public func reduce<T, U>(
+    tryCurry seed: @autoclosure Try.Do<T>,
+    _ transform: Try.By<Wrapped>.Of<T>.Do<U>
+  ) throws -> U? {
+    if let value = self { return try transform(value)(seed()) } else { return nil }
+  }
+  public var array: [Wrapped] {
     if let wrapped = self { return [wrapped] } else { return [] }
   }
-  public static func unwrap(value: Self) throws -> Wrapped {
-    if let value = value { return value } else { throw Thrown() }
+  public static func get(or error: Error, value: Self) throws -> Wrapped {
+    if let value = value { return value } else { throw error }
   }
   public static prefix func ?! (value: Self) throws -> Wrapped {
     if let value = value { return value } else { throw Thrown() }
