@@ -12,13 +12,13 @@ extension AnyCodable {
       this[URL.self] = { decoder in try Lossy
         .init(try decoder.singleValueContainer())
         .reduce(curry: String.self, SingleValueDecodingContainer.decode(_:))
-        .map { url in try URL(string: url).get { throw Thrown("bad url: \(url)") }}
+        .map { url in try URL(string: url).get { throw Thrown("not url: \(url)") }}
         .get()
       }
       this[Data.self] = { decoder in try Lossy
         .init(try decoder.singleValueContainer())
         .reduce(curry: String.self, SingleValueDecodingContainer.decode(_:))
-        .map { data in try Data(base64Encoded: data).get { throw Thrown("bad url: \(data)") }}
+        .map { data in try Data(base64Encoded: data).get { throw Thrown("not base64: \(data)") }}
         .get()
       }
       this[Date.self] = { decoder in try Lossy

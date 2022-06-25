@@ -10,7 +10,12 @@ public enum AnyCodable: Codable, Equatable, CustomDebugStringConvertible {
         self = .list(value)
     } else if let value = try? [String: Self](from: decoder) {
         self = .map(value)
-    } else { throw Thrown("Value can not be decoded") }
+    } else {
+      let path = decoder.codingPath
+        .map { $0.intValue.map(\.description).get($0.stringValue) }
+        .joined(separator: ".")
+      throw Thrown("\(path) not value, dictionary or array")
+    }
   }
   public func encode(to encoder: Encoder) throws {
     switch self {
