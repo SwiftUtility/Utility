@@ -47,6 +47,34 @@ public enum AnyCodable: Codable, Equatable, CustomDebugStringConvertible {
   public var map: [String: AnyCodable]? {
     if case .map(let value) = self { return value } else { return nil }
   }
+  public var array: [AnyCodable] {
+    get {
+      if case .list(let array) = self { return array }
+      else { return [] }
+    }
+    set {
+      self = .list(newValue)
+    }
+  }
+  public var string: String? {
+    get {
+      if case .value(let value) = self { return value.string }
+      else { return nil }
+    }
+    set {
+      if let newValue { self = .value(.string(newValue)) }
+      else { self = .value(.null) }
+    }
+  }
+  public var dictionary: [String: AnyCodable] {
+    get {
+      if case .map(let dictionary) = self { return dictionary }
+      else { return [:] }
+    }
+    set {
+      self = .map(newValue)
+    }
+  }
   public init(any: Any?) throws {
     if let value = Value(any: any) {
       self = .value(value)

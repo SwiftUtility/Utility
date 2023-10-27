@@ -13,7 +13,7 @@ extension AnyCodable {
       let writer = Writer(notation: notation)
       try writer.write(value)
       writer.flush(to: 1)
-      return try writer.items.first.get { throw MayDay("Encoder precondition broken") }
+      return try writer.items.first.get { throw Thrown("Encoder precondition broken") }
     }
     func write(_ value: Encodable) throws {
       try notation.encode(value, by: self).get { try value.encode(to: self) }
